@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CulinaryPortal - How to Cook</title>
+    <style>
+        :root {
+            --primary: #e63946;
+            --primary-dark: #d62828;
+            --bg-main: #f8f9fa;
+            --surface: #ffffff;
+            --text-main: #1d3557;
+            --text-muted: #6c757d;
+            --border: #dee2e6;
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --radius: 8px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); line-height: 1.5; padding-bottom: 3rem; }
+        
+        /* Header & Search */
+        header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 1.25rem 2rem; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; }
+        .brand { font-size: 1.5rem; font-weight: 800; color: var(--primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .search-form { display: flex; flex: 1; max-width: 500px; min-width: 280px; }
+        .search-input { flex: 1; padding: 0.625rem 1rem; border: 2px solid var(--border); border-right: none; border-radius: var(--radius) 0 0 var(--radius); font-size: 1rem; outline: none; transition: border-color 0.2s; }
+        .search-input:focus { border-color: var(--primary); }
+        .search-btn { padding: 0.625rem 1.25rem; background: var(--primary); color: white; border: none; font-weight: 600; border-radius: 0 var(--radius) var(--radius) 0; cursor: pointer; transition: background 0.2s; }
+        .search-btn:hover { background: var(--primary-dark); }
+
+        .api-key-config { font-size: 0.85rem; color: var(--text-muted); cursor: pointer; text-decoration: underline; }
+
+        /* Main Container & Filters */
+        .main-container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        .filter-panel { background: var(--surface); padding: 1.5rem; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 2rem; border: 1px solid var(--border); }
+        
+        .filter-group { margin-bottom: 1.25rem; }
+        .filter-group:last-child { margin-bottom: 0; }
+        .filter-label { font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 0.75rem; display: block; }
+        
+        .pill-group { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .filter-pill { padding: 0.5rem 1rem; background: var(--bg-main); border: 1px solid var(--border); border-radius: 50px; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; user-select: none; }
+        .filter-pill:hover { border-color: var(--primary); color: var(--primary); }
+        .filter-pill.active { background: var(--primary); color: white; border-color: var(--primary); font-weight: 600; }
+
+        .sub-panel { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed var(--border); display: none; }
+        .sub-panel.visible { display: block; }
+        .sub-label { font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem; }
+
+        /* Video Grid */
+        .status-bar { margin-bottom: 1.5rem; font-weight: 600; font-size: 0.95rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.5rem; }
+        
+        .video-card { background: var(--surface); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; text-decoration: none; color: inherit; border: 1px solid var(--border); }
+        .video-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        
+        .thumb-wrapper { position: relative; width: 100%; padding-top: 56.25%; /* 16:9 Aspect Ratio */ background: #000; overflow: hidden; }
+        .thumb-wrapper img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+        .play-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 48px; height: 48px; background: rgba(230, 57, 70, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        .video-card:hover .play-overlay { opacity: 1; }
+        .play-overlay::after { content: ""; border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent white; margin-left: 4px; }
+
+        .card-content { padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .video-title { font-size: 1rem; font-weight: 600; line-height: 1.4; margin-bottom: 0.5rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .video-channel { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; }
+
+        /* Pagination & States */
+        .load-more-container { text-align: center; margin-top: 3rem; }
+        .btn-load { padding: 0.75rem 2rem; background: var(--surface); border: 2px solid var(--primary); color: var(--primary); font-weight: 700; font-size: 1rem; border-radius: 50px; cursor: pointer; transition: all 0.2s; }
+        .btn-load:hover { background: var(--primary); color: white; }
+        .btn-load:disabled { opacity: 0.5; cursor: not-allowed; border-color: var(--border); color: var(--text-muted); }
+
+        .error-message { background: #ffe3e3; border-left: 4px solid #ff6b6b; padding: 1rem; border-radius: var(--radius); margin: 2rem 0; color: #c92a2a; font-weight: 500; }
+        .empty-state { text-align: center; padding: 4rem 1rem; color: var(--text-muted); grid-column: 1 / -1; }
+        .spinner { border: 3px solid var(--border); border-top: 3px solid var(--primary); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 2rem auto; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Modal Video Player */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
+        .modal.active { display: flex; }
+        .modal-content { position: relative; width: 100%; max-width: 800px; background: #000; border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/9; }
+        .modal-close { position: absolute; top: -40px; right: 0; color: white; font-size: 2rem; cursor: pointer; background: none; border: none; }
+        
+        @media (max-width: 600px) {
+            header { padding: 1rem; }
+            .header-container { flex-direction: column; align-items: stretch; }
+            .search-form { max-width: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <a href="#" class="brand">🍳 How to Cook</a>
+            <form class="search-form" id="searchForm">
+                <input type="text" id="searchInput" class="search-input" placeholder="Nhập tên món ăn (e.g., phở bò, trà đào)..." autocomplete="off">
+                <button type="submit" class="search-btn">Tìm Kiếm</button>
+            </form>
+            <span class="api-key-config" id="configKeyBtn">⚙️ cấu hình API Key</span>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <section class="filter-panel">
+            <!-- Food Type Filter -->
+            <div class="filter-group">
+                <span class="filter-label">1. Food Type (Phân Loại Món Ăn)</span>
+                <div class="pill-group" id="foodTypeGroup">
+                    <div class="filter-pill active" data-type="all">Tất cả</div>
+                    <div class="filter-pill" data-type="baby">Baby food (Đồ ăn dặm 6-24m)</div>
+                    <div class="filter-pill" data-type="snacks">Snacks (Đồ ăn vặt)</div>
+                    <div class="filter-pill" data-type="drinks">Drinks (Đồ uống) ▼</div>
+                    <div class="filter-pill" data-type="food">Food (Đồ ăn) ▼</div>
+                </div>
+
+                <!-- Sub-panel for Drinks -->
+                <div class="sub-panel" id="drinksSubPanel">
+                    <div class="sub-label">👉 Phân loại Đồ uống (Trending & Popular Options):</div>
+                    <div class="pill-group" id="drinksSubGroup">
+                        <div class="filter-pill active" data-subtype="">Tất cả đồ uống</div>
+                        <div class="filter-pill" data-subtype="tea">Tea (Trà sữa, trà dâu tây, trà đào)</div>
+                        <div class="filter-pill" data-subtype="coffee">Coffee (Cappuccino, Frappuccino, Latte)</div>
+                        <div class="filter-pill" data-subtype="sweet">Sweet Drinks (Trà hoa quả giải khát)</div>
+                        <div class="filter-pill" data-subtype="juices">Juices (Nước ép dưa hấu, sinh tố)</div>
+                    </div>
+                </div>
+
+                <!-- Sub-panel for Food -->
+                <div class="sub-panel" id="foodSubPanel">
+                    <div class="sub-label">👉 Phân loại Đồ ăn:</div>
+                    <div class="pill-group" id="foodSubGroup">
+                        <div class="filter-pill active" data-subtype="">Tất cả đồ ăn</div>
+                        <div class="filter-pill" data-subtype="hot">Hot dishes (Món nóng / Lẩu / Súp)</div>
+                        <div class="filter-pill" data-subtype="cold">Cold dishes (Món lạnh / Gỏi / Salad)</div>
+                        <div class="filter-pill" data-subtype="fast">Fast food (Thức ăn nhanh)</div>
+                        <div class="filter-pill" data-subtype="cooked">Thoroughly cooked (Món hầm / Ninh / Kho)</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Skill Level Filter -->
+            <div class="filter-group" style="margin-top: 1.5rem;">
+                <span class="filter-label">2. Skill Level (Cấp Độ Kỹ Năng)</span>
+                <div class="pill-group" id="skillLevelGroup">
+                    <div class="filter-pill active" data-level="all">Tất cả cấp độ</div>
+                    <div class="filter-pill" data-level="beginner" title="No complex skills needed. Pre-made or processed ingredients.">New Beginner (Mới bắt đầu)</div>
+                    <div class="filter-pill" data-level="elementary" title="Simple, few-ingredient recipes for novices.">Elementary (Sơ cấp)</div>
+                    <div class="filter-pill" data-level="intermediate" title="Mastered basics; requires precision and detail.">Intermediate (Trung cấp)</div>
+                    <div class="filter-pill" data-level="advanced" title="Master makers; top-tier products demanding complex techniques.">Advanced (Cao cấp)</div>
+                    <div class="filter-pill" data-level="challenge" title="Experienced cooks seeking difficult recipes to challenge themselves.">Challenge (Thử thách)</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="status-bar" id="statusBar">
+            <span id="statusText">Đang hiển thị hướng dẫn nấu ăn phổ biến</span>
+            <span id="itemCount"></span>
+        </div>
+
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+        <section class="video-grid" id="videoGrid"></section>
+        
+        <div class="spinner" id="loadingSpinner"></div>
+
+        <div class="load-more-container">
+            <button id="loadMoreBtn" class="btn-load" style="display: none;">Xem Thêm Hướng Dẫn (Load More)</button>
+        </div>
+    </main>
+
+    <!-- Video Player Modal -->
+    <div class="modal" id="videoModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <iframe id="modalIframe" width="100%" height="100%" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * CLINICAL ARCHITECTURAL CONFIGURATION
+         * Replace [FILL: API key] with your actual Google Cloud YouTube Data API v3 Key.
+         */
+        const CONFIG = {
+            API_KEY: "AIzaSyD7Nbtw3hjr0aZsSujG3OnUAddQQNzrJwg",
+            MAX_RESULTS: 16, // Optimal for 4x4 grid, strict quota protection
+            BASE_URL: "https://www.googleapis.com/youtube/v3/search"
+        };
+
+        // Enforce strict culinary instructional intent
+        const POSITIVE_ENFORCERS = '("cách làm" OR "cách nấu" OR "hướng dẫn" OR "recipe" OR "tutorial" OR "how to cook")';
+        const NEGATIVE_EXCLUSIONS = '-"mukbang" -"review" -"eating show" -"vlog" -"quán ngon" -"ăn thử" -"challenge ăn" -"reaction" -"tour" -"ẩm thực đường phố" -"bắt trend"';
+
+        // State Management
+        let state = {
+            query: "",
+            foodType: "all",
+            subType: "",
+            skillLevel: "all",
+            nextPageToken: "",
+            isLoading: false
+        };
+
+        // DOM Elements
+        const DOM = {
+            searchForm: id("searchForm"),
+            searchInput: id("searchInput"),
+            videoGrid: id("videoGrid"),
+            loadMoreBtn: id("loadMoreBtn"),
+            loadingSpinner: id("loadingSpinner"),
+            errorMessage: id("errorMessage"),
+            statusText: id("statusText"),
+            itemCount: id("itemCount"),
+            drinksSubPanel: id("drinksSubPanel"),
+            foodSubPanel: id("foodSubPanel"),
+            configKeyBtn: id("configKeyBtn"),
+            modal: id("videoModal"),
+            modalIframe: id("modalIframe"),
+            closeModal: id("closeModal")
+        };
+
+        function id(str) { return document.getElementById(str); }
+
+        // --- TAXONOMY & KEYWORD MAPPING ENGINE ---
+        function buildTaxonomyQuery() {
+            let terms = [];
+
+            // 1. Food Type Mapping
+            if (state.foodType === "baby") {
+                terms.push('("ăn dặm" OR "baby food" OR "cháo cho bé" OR "thực đơn 6 tháng")');
+            } else if (state.foodType === "snacks") {
+                terms.push('("ăn vặt" OR "snack" OR "bánh tráng" OR "đồ ăn nhẹ" OR "bánh flan")');
+            } else if (state.foodType === "drinks") {
+                if (state.subType === "tea") terms.push('("trà sữa" OR "trà dâu tây" OR "trà đào" OR "trà chanh" OR "fruit tea")');
+                else if (state.subType === "coffee") terms.push('("cà phê" OR "cappuccino" OR "frappuccino" OR "latte" OR "bạc xỉu")');
+                else if (state.subType === "sweet") terms.push('("trà hoa quả" OR "nước ngọt giải khát" OR "đồ uống ngọt" OR "soda mix")');
+                else if (state.subType === "juices") terms.push('("nước ép" OR "sinh tố" OR "nước dưa hấu" OR "smoothie" OR "juice")');
+                else terms.push('("đồ uống" OR "pha chế" OR "nước giải khát" OR "trà" OR "cà phê")');
+            } else if (state.foodType === "food") {
+                if (state.subType === "hot") terms.push('("lẩu" OR "súp" OR "canh" OR "món nóng" OR "món xào" OR "món nướng")');
+                else if (state.subType === "cold") terms.push('("gỏi" OR "nộm" OR "salad" OR "món cuốn" OR "món lạnh")');
+                else if (state.subType === "fast") terms.push('("thức ăn nhanh" OR "gà rán" OR "hamburger" OR "pizza" OR "khoai tây chiên")');
+                else if (state.subType === "cooked") terms.push('("món hầm" OR "ninh" OR "kho tằm" OR "bò kho" OR "nấu chậm" OR "chín kỹ")');
+                else terms.push('("món ăn ngon" OR "nấu ăn gia đình" OR "thực đơn hàng ngày")');
+            }
+
+            // 2. Skill Level Mapping
+            switch(state.skillLevel) {
+                case "beginner":
+                    terms.push('("siêu đơn giản" OR "cho người mới" OR "không cần lò" OR "nguyên liệu có sẵn" OR "dễ làm")');
+                    break;
+                case "elementary":
+                    terms.push('("sơ cấp" OR "cơ bản" OR "ít nguyên liệu" OR "dễ làm tại nhà" OR "bước cơ bản")');
+                    break;
+                case "intermediate":
+                    terms.push('("trung cấp" OR "chuẩn vị" OR "bíp kíp" OR "kỹ thuật nấu" OR "công thức chuẩn")');
+                    break;
+                case "advanced":
+                    terms.push('("cao cấp" OR "chuyên nghiệp" OR "masterclass" OR "phức tạp" OR "cầu kỳ" OR "chuẩn nhà hàng")');
+                    break;
+                case "challenge":
+                    terms.push('("thử thách nấu" OR "món khó" OR "đỉnh cao" OR "challenge recipe" OR "nhiều công đoạn")');
+                    break;
+            }
+
+            return terms.join(" ");
+        }
+
+        // --- API EXECUTION ENGINE ---
+        async function fetchVideos(isLoadMore = false) {
+            if (state.isLoading) return;
+            
+            const activeKey = localStorage.getItem("YOUTUBE_API_KEY") || CONFIG.API_KEY;
+            if (!activeKey || activeKey.includes("[FILL:")) {
+                showError("Vui lòng cấu hình API Key (chọn '⚙️ cấu hình API Key' trên góc phải) trước khi tìm kiếm.");
+                return;
+            }
+
+            state.isLoading = true;
+            DOM.loadingSpinner.style.display = "block";
+            DOM.errorMessage.style.display = "none";
+            if (!isLoadMore) {
+                DOM.videoGrid.innerHTML = "";
+                DOM.loadMoreBtn.style.display = "none";
+            }
+
+            try {
+                // Compile clinical query payload
+                let queryParts = [state.query, buildTaxonomyQuery(), POSITIVE_ENFORCERS, NEGATIVE_EXCLUSIONS];
+                let finalQueryString = queryParts.filter(Boolean).join(" ");
+
+                const params = new URLSearchParams({
+                    part: "snippet",
+                    type: "video",
+                    maxResults: CONFIG.MAX_RESULTS,
+                    q: finalQueryString,
+                    key: activeKey,
+                    videoEmbeddable: "true",
+                    relevanceLanguage: "vi",
+                    fields: "nextPageToken,items(id/videoId,snippet/title,snippet/thumbnails/high/url,snippet/channelTitle)"
+                });
+
+                if (isLoadMore && state.nextPageToken) {
+                    params.append("pageToken", state.nextPageToken);
+                }
+
+                const response = await fetch(`${CONFIG.BASE_URL}?${params.toString()}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error?.message || `HTTP Error: ${response.status}`);
+                }
+
+                state.nextPageToken = data.nextPageToken || "";
+                renderVideos(data.items || [], isLoadMore);
+                updateStatusBar(data.items?.length || 0, isLoadMore);
+
+            } catch (err) {
+                console.error("Clinical API Fetch Error:", err);
+                showError(`Lỗi kết nối API: ${err.message}. Vui lòng kiểm tra lại Quota hoặc API Key.`);
+            } finally {
+                state.isLoading = false;
+                DOM.loadingSpinner.style.display = "none";
+            }
+        }
+
+        // --- UI RENDERING & CLIENT-SIDE GUARDRAILS ---
+        function renderVideos(items, isLoadMore) {
+            if (!items.length && !isLoadMore) {
+                DOM.videoGrid.innerHTML = `<div class="empty-state"><h3>Không tìm thấy video hướng dẫn nấu ăn phù hợp</h3><p>Thử giảm bớt bộ lọc hoặc thay đổi từ khóa tìm kiếm</p></div>`;
+                DOM.loadMoreBtn.style.display = "none";
+                return;
+            }
+
+            const fragment = document.createDocumentFragment();
+
+            items.forEach(item => {
+                const videoId = item.id?.videoId;
+                const snippet = item.snippet;
+                if (!videoId || !snippet) return;
+
+                // Client-side Secondary Guardrail: Regex check against noise keywords
+                const titleLower = snippet.title.toLowerCase();
+                const noiseRegex = /mukbang|eating show|review quán|ăn thử|vlog|du lịch|reaction|thử thách ăn/i;
+                if (noiseRegex.test(titleLower)) return;
+
+                const card = document.createElement("a");
+                card.className = "video-card";
+                card.href = `#`;
+                card.onclick = (e) => {
+                    e.preventDefault();
+                    openModal(videoId);
+                };
+
+                const thumbUrl = snippet.thumbnails?.high?.url || "";
+                
+                card.innerHTML = `
+                    <div class="thumb-wrapper">
+                        <img src="${thumbUrl}" alt="${escapeHtml(snippet.title)}" loading="lazy">
+                        <div class="play-overlay"></div>
+                    </div>
+                    <div class="card-content">
+                        <h4 class="video-title" title="${escapeHtml(snippet.title)}">${escapeHtml(snippet.title)}</h4>
+                        <span class="video-channel">🧑‍🍳 ${escapeHtml(snippet.channelTitle)}</span>
+                    </div>
+                `;
+                fragment.appendChild(card);
+            });
+
+            DOM.videoGrid.appendChild(fragment);
+            DOM.loadMoreBtn.style.display = state.nextPageToken ? "inline-block" : "none";
+        }
+
+        function updateStatusBar(count, isLoadMore) {
+            let text = state.query ? `Kết quả hướng dẫn cho "${state.query}"` : "Video hướng dẫn nấu ăn phổ biến";
+            if (state.foodType !== "all") text += ` • Phân loại: ${state.foodType.toUpperCase()}`;
+            if (state.subType) text += ` (${state.subType})`;
+            if (state.skillLevel !== "all") text += ` • Cấp độ: ${state.skillLevel}`;
+            
+            DOM.statusText.textContent = text;
+            if (!isLoadMore) {
+                DOM.itemCount.textContent = `Hiển thị ${count} video chất lượng`;
+            }
+        }
+
+        function showError(msg) {
+            DOM.errorMessage.textContent = msg;
+            DOM.errorMessage.style.display = "block";
+            DOM.loadMoreBtn.style.display = "none";
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // --- MODAL CONTROLS ---
+        function openModal(videoId) {
+            DOM.modalIframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+            DOM.modal.classList.add("active");
+        }
+
+        DOM.closeModal.onclick = () => {
+            DOM.modal.classList.remove("active");
+            DOM.modalIframe.src = "";
+        };
+
+        window.onclick = (e) => {
+            if (e.target === DOM.modal) DOM.closeModal.onclick();
+        };
+
+        // --- EVENT LISTENERS & INTERACTION LOGIC ---
+        DOM.searchForm.onsubmit = (e) => {
+            e.preventDefault();
+            state.query = DOM.searchInput.value.trim();
+            state.nextPageToken = "";
+            fetchVideos();
+        };
+
+        DOM.loadMoreBtn.onclick = () => {
+            if (state.nextPageToken) fetchVideos(true);
+        };
+
+        // Filter Group Click Handling (Delegation)
+        function setupFilterGroup(groupId, stateKey, callback) {
+            const group = id(groupId);
+            group.addEventListener("click", (e) => {
+                if (!e.target.classList.contains("filter-pill")) return;
+                
+                group.querySelectorAll(".filter-pill").forEach(p => p.classList.remove("active"));
+                e.target.classList.add("active");
+                
+                const val = e.target.getAttribute(`data-${stateKey}`) || "";
+                state[stateKey] = val;
+                
+                if (callback) callback(val);
+                state.nextPageToken = "";
+                fetchVideos();
+            });
+        }
+
+        setupFilterGroup("foodTypeGroup", "foodType", (val) => {
+            state.subType = ""; // Reset sub-type on primary change
+            DOM.drinksSubPanel.classList.toggle("visible", val === "drinks");
+            DOM.foodSubPanel.classList.toggle("visible", val === "food");
+            
+            // Reset active pills in sub-panels
+            id("drinksSubGroup").querySelectorAll(".filter-pill").forEach((p, idx) => p.classList.toggle("active", idx === 0));
+            id("foodSubGroup").querySelectorAll(".filter-pill").forEach((p, idx) => p.classList.toggle("active", idx === 0));
+        });
+
+        setupFilterGroup("drinksSubGroup", "subType");
+        setupFilterGroup("foodSubGroup", "subType");
+        setupFilterGroup("skillLevelGroup", "skillLevel");
+
+        // API Key Runtime Configuration
+        DOM.configKeyBtn.onclick = () => {
+            const currentKey = localStorage.getItem("YOUTUBE_API_KEY") || CONFIG.API_KEY;
+            const input = prompt("Nhập Google Cloud YouTube Data API v3 Key của bạn:", currentKey.includes("[FILL:") ? "" : currentKey);
+            if (input !== null) {
+                localStorage.setItem("YOUTUBE_API_KEY", input.trim());
+                alert("Đã lưu API Key thành công!");
+                fetchVideos();
+            }
+        };
+
+        // Initial Initialization
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchVideos();
+        });
+    </script>
+</body>
+</html>
