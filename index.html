@@ -3,147 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CulinaryPortal - How-to Cook</title>
+    <title>CulinaryPortal - How to Cook</title>
     <style>
         :root {
-            --primary-color: #ff4757;
-            --secondary-color: #ff6b81;
-            --bg-color: #f8f9fa;
-            --text-color: #333;
-            --card-bg: #fff;
-            --radius: 12px;
-            --shadow: 0 4px 15px rgba(0,0,0,0.08);
+            --primary: #e84118;
+            --primary-hover: #c23616;
+            --bg-body: #f5f6fa;
+            --bg-card: #ffffff;
+            --text-main: #2f3542;
+            --text-muted: #747d8c;
+            --border-color: #dcdde1;
+            --radius: 10px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding-bottom: 50px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding-bottom: 60px;
         }
 
         header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 30px 20px;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 25px 20px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(255, 71, 87, 0.2);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
 
         header h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-        }
-
-        header p {
-            font-size: 1rem;
-            opacity: 0.9;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 30px auto;
+            max-width: 1280px;
+            margin: 25px auto;
             padding: 0 20px;
         }
 
-        .search-box {
+        /* Search Bar */
+        .search-container {
             display: flex;
-            justify-content: center;
+            max-width: 600px;
+            margin: 0 auto 30px auto;
             gap: 10px;
-            margin-bottom: 25px;
         }
 
-        .search-box input {
-            width: 100%;
-            max-width: 500px;
-            padding: 12px 20px;
+        .search-container input {
+            flex: 1;
+            padding: 12px 18px;
             font-size: 1rem;
-            border: 2px solid #ddd;
+            border: 2px solid var(--border-color);
             border-radius: var(--radius);
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.2s;
         }
 
-        .search-box input:focus {
-            border-color: var(--primary-color);
+        .search-container input:focus {
+            border-color: var(--primary);
         }
 
-        .search-box button {
-            padding: 12px 25px;
-            background-color: var(--primary-color);
+        .search-container button {
+            padding: 12px 24px;
+            background-color: var(--primary);
             color: white;
             border: none;
             border-radius: var(--radius);
             font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.2s;
         }
 
-        .search-box button:hover {
-            background-color: #ff2d3d;
+        .search-container button:hover {
+            background-color: var(--primary-hover);
         }
 
-        .categories {
+        /* Filter Panels */
+        .filter-panel {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 25px;
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 35px;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .cat-btn {
-            padding: 8px 18px;
-            background-color: white;
-            border: 2px solid #e1e1e1;
+        .filter-group {
+            display: flex;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f2f6;
+        }
+
+        .filter-group:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .filter-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            min-width: 110px;
+            padding-top: 6px;
+        }
+
+        .filter-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .btn-tag {
+            padding: 6px 14px;
+            background-color: #f1f2f6;
+            border: 1px solid transparent;
             border-radius: 20px;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
+            color: var(--text-main);
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s ease;
             font-weight: 500;
         }
 
-        .cat-btn:hover, .cat-btn.active {
-            background-color: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
+        .btn-tag:hover {
+            background-color: #e4e7eb;
         }
 
+        .btn-tag.active {
+            background-color: var(--primary);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 2px 6px rgba(232, 65, 24, 0.3);
+        }
+
+        /* Sub-categories styling */
+        .sub-panel {
+            display: none;
+            background-color: #fff9f8;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            margin-top: 5px;
+            width: 100%;
+        }
+
+        /* Video Grid */
         .video-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
         }
 
         .video-card {
-            background: var(--card-bg);
+            background: var(--bg-card);
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow);
-            transition: transform 0.3s, box-shadow 0.3s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
             display: flex;
             flex-direction: column;
         }
 
         .video-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
 
-        .thumbnail-container {
+        .thumb-wrap {
             position: relative;
             width: 100%;
-            padding-top: 56.25%;
-            background-color: #eee;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background-color: #2f3542;
         }
 
-        .thumbnail-container img {
+        .thumb-wrap img {
             position: absolute;
             top: 0;
             left: 0;
@@ -152,181 +207,486 @@
             object-fit: cover;
         }
 
-        .video-info {
+        .card-content {
             padding: 15px;
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
             justify-content: space-between;
+            flex: 1;
         }
 
-        .video-title {
+        .card-title {
             font-size: 1rem;
             font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            color: var(--text-main);
         }
 
-        .video-channel {
+        .card-channel {
             font-size: 0.85rem;
-            color: #666;
-            margin-bottom: 12px;
+            color: var(--text-muted);
         }
 
-        .watch-btn {
-            text-align: center;
-            padding: 8px;
-            background-color: #f1f2f6;
-            color: var(--primary-color);
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: background 0.2s, color 0.2s;
-        }
-
-        .watch-btn:hover {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .load-more-container {
+        /* Pagination / Load More */
+        .pagination-wrap {
             text-align: center;
             margin-top: 40px;
         }
 
         .btn-load {
-            padding: 12px 30px;
-            background-color: #333;
-            color: white;
+            padding: 12px 36px;
+            background-color: #2f3542;
+            color: #ffffff;
             border: none;
             border-radius: var(--radius);
-            font-size: 1rem;
+            font-size: 0.95rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.2s;
         }
 
         .btn-load:hover {
-            background-color: #555;
+            background-color: #57606f;
         }
 
-        .loading, .error-msg, .no-result {
+        /* Modal Video Overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .btn-close {
+            padding: 8px 20px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .btn-close:hover {
+            background-color: #ff6b81;
+            transform: scale(1.05);
+        }
+
+        .iframe-wrap {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: #000000;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .iframe-wrap iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Utility states */
+        .status-msg {
             grid-column: 1 / -1;
             text-align: center;
             padding: 40px;
-            font-size: 1.1rem;
-            color: #666;
-        }
-
-        .error-msg {
-            color: var(--primary-color);
+            color: var(--text-muted);
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>CulinaryPortal - How-to Cook</h1>
-        <p>Khám phá công thức nấu ăn, đồ uống và mẹo làm bếp đỉnh cao từ YouTube</p>
+        <h1>CulinaryPortal - How-to Cook Architecture</h1>
     </header>
 
     <div class="container">
-        <!-- Khung tìm kiếm -->
-        <div class="search-box">
-            <input type="text" id="searchInput" placeholder="Nhập tên món ăn hoặc đồ uống bạn muốn tìm...">
-            <button id="searchBtn">Tìm kiếm</button>
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Nhập tên món ăn (VD: Phở bò, Trà sữa, Gà rán...)...">
+            <button id="searchBtn">Tìm Kiếm</button>
         </div>
 
-        <!-- Các nút phân loại danh mục đúng chuẩn trực quan -->
-        <div class="categories" id="categoryContainer">
-            <button class="cat-btn active" data-query="công thức nấu ăn">Tất cả</button>
-            <button class="cat-btn" data-query="món ăn gia đình">Món Ăn Gia Đình</button>
-            <button class="cat-btn" data-query="đồ ăn nhanh">Đồ Ăn Nhanh</button>
-            <button class="cat-btn" data-query="đồ ăn vặt">Đồ Ăn Vặt</button>
-            <button class="cat-btn" data-query="đồ uống trà cà phê">Đồ Uống (Trà, Cà phê...)</button>
-            <button class="cat-btn" data-query="món canh súp nóng">Món Canh / Súp Nóng</button>
+        <!-- Filter Panels -->
+        <div class="filter-panel">
+            <!-- Skill Level Filter -->
+            <div class="filter-group">
+                <div class="filter-label">Cấp Độ:</div>
+                <div class="filter-items" id="levelFilters"></div>
+            </div>
+
+            <!-- Food Type Filter -->
+            <div class="filter-group">
+                <div class="filter-label">Danh Mục:</div>
+                <div class="filter-items" id="categoryFilters"></div>
+            </div>
+
+            <!-- Sub-category Level 1 (e.g., Drinks -> Tea/Coffee) -->
+            <div class="sub-panel" id="subCategoryPanel">
+                <div class="filter-group">
+                <div class="filter-label" style="min-width: 90px; color: var(--primary);">Phân Loại:</div>
+                    <div class="filter-items" id="subCategoryFilters"></div>
+                </div>
+            </div>
+
+            <!-- Sub-category Level 2 (Trending/Popular items) -->
+            <div class="sub-panel" id="trendingPanel" style="background-color: #f1f2f6; border-left-color: #747d8c;">
+                <div class="filter-group">
+                    <div class="filter-label" style="min-width: 90px;">Món Phổ Biến:</div>
+                    <div class="filter-items" id="trendingFilters"></div>
+                </div>
+            </div>
         </div>
 
-        <!-- Lưới hiển thị danh sách video -->
+        <!-- Video Grid -->
         <div class="video-grid" id="videoGrid"></div>
 
-        <!-- Nút xem thêm -->
-        <div class="load-more-container">
+        <!-- Pagination -->
+        <div class="pagination-wrap">
             <button id="loadMoreBtn" class="btn-load" style="display: none;">Xem Thêm</button>
         </div>
     </div>
 
+    <!-- Video Modal Overlay -->
+    <div class="modal-overlay" id="videoModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <button class="btn-close" id="closeModalBtn">Đóng</button>
+            </div>
+            <div class="iframe-wrap">
+                <iframe id="youtubeIframe" src="" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
     <script>
-        let state = {
-            currentQuery: "công thức nấu ăn",
-            nextPageToken: ""
+        /**
+         * CONFIGURATION & TAXONOMY ARCHITECTURE
+         * Senior Web Architect implementation of deep hierarchical classification
+         */
+        const CONFIG = {
+            API_KEY: "AIzaSyD7Nbtw3hjr0aZsSujG3OnUAddQQNzrJwg", // Replaced during deployment
+            MAX_RESULTS: 18,
+            BASE_URL: "https://www.googleapis.com/youtube/v3/search",
+            // Strictly enforce cooking recipes and filter out non-instructional clutter
+            POSITIVE_MODIFIERS: '("cách làm" OR "hướng dẫn" OR "recipe" OR "cách nấu" OR "cách pha")',
+            NEGATIVE_MODIFIERS: '-review -vlog -mukbang -react -intro -"ăn thử" -"quán ngon" -"top quán" -travel'
         };
 
+        const TAXONOMY = {
+            levels: [
+                { id: "all", label: "Tất cả cấp độ", query: "" },
+                { id: "beg", label: "Mới bắt đầu", query: "dễ làm siêu đơn giản chế biến sẵn" },
+                { id: "elem", label: "Sơ cấp", query: "sơ cấp ít nguyên liệu đơn giản" },
+                { id: "inter", label: "Trung cấp", query: "trung cấp chuẩn vị chi tiết" },
+                { id: "adv", label: "Cao cấp", query: "cao cấp phức tạp chuyên nghiệp kỹ thuật cao" },
+                { id: "chal", label: "Thử thách", query: "thử thách khó làm công phu kiên nhẫn" }
+            ],
+            categories: [
+                { id: "all", label: "Tất Cả", query: "" },
+                { id: "baby", label: "Đồ ăn dặm (6-24th)", query: "thực đơn đồ ăn dặm cho bé từ 6 đến 24 tháng tuổi" },
+                { id: "snacks", label: "Đồ ăn vặt", query: "cách làm món ăn vặt ngon tại nhà" },
+                { 
+                    id: "drinks", 
+                    label: "Đồ uống", 
+                    query: "cách pha chế đồ uống",
+                    sub: [
+                        { 
+                            id: "tea", label: "Trà", query: "cách pha trà ngon",
+                            trending: [
+                                { label: "Trà sữa trân châu", query: "cách làm trà sữa trân châu chuẩn quán" },
+                                { label: "Trà đào cam sả", query: "cách pha trà đào cam sả thơm ngon" },
+                                { label: "Trà sen vàng", query: "cách làm trà sen vàng kem cheese" },
+                                { label: "Trà chanh giã tay", query: "cách làm trà chanh giã tay ngon" }
+                            ]
+                        },
+                        { 
+                            id: "coffee", label: "Cà phê", query: "cách pha cà phê thơm ngon",
+                            trending: [
+                                { label: "Cappuccino", query: "cách pha cappuccino tại nhà chuẩn ý" },
+                                { label: "Frappuccino", query: "cách làm đá xay frappuccino caramel" },
+                                { label: "Bạc xỉu", query: "cách pha bạc xỉu 3 tầng thơm béo" },
+                                { label: "Cà phê trứng", query: "cách làm cà phê trứng hà nội không tanh" },
+                                { label: "Latte Art", query: "hướng dẫn vẽ latte art cơ bản cho người mới" }
+                            ]
+                        },
+                        { 
+                            id: "sweet", label: "Đồ uống ngọt / Trà trái cây", query: "cách pha trà trái cây đồ uống ngọt giải nhiệt",
+                            trending: [
+                                { label: "Trà dâu tây", query: "cách làm trà dâu tây ngâm mát lạnh" },
+                                { label: "Trà vải macchiato", query: "cách làm trà vải kem cheese macchiato" },
+                                { label: "Sữa tươi trân châu đường đen", query: "cách nấu trân châu đường đen sữa tươi ngon" }
+                            ]
+                        },
+                        { 
+                            id: "juices", label: "Nước ép", query: "cách làm nước ép trái cây giữ tinh chất",
+                            trending: [
+                                { label: "Nước ép dưa hấu", query: "cách làm nước ép dưa hấu mix giải nhiệt" },
+                                { label: "Nước ép cần tây", query: "cách làm nước ép cần tây giảm cân dễ uống" },
+                                { label: "Nước ép táo thơm", query: "cách làm nước ép táo thơm dứa không bị thâm" }
+                            ]
+                        }
+                    ]
+                },
+                { 
+                    id: "food", 
+                    label: "Đồ ăn", 
+                    query: "hướng dẫn nấu món ăn ngon",
+                    sub: [
+                        { id: "hot", label: "Món nóng", query: "cách nấu món nóng canh súp lẩu hổi ấm bụng" },
+                        { id: "cold", label: "Món lạnh", query: "cách làm món lạnh gỏi salad nộm thanh mát" },
+                        { id: "fast", label: "Đồ ăn nhanh", query: "cách làm đồ ăn nhanh fast food gà rán hamburger pizza" },
+                        { id: "cooked", label: "Món nấu chín kỹ", query: "cách nấu món hầm nhừ kho tộ ninh xương chín kỹ" }
+                    ]
+                }
+            ]
+        };
+
+        // Application State
+        let state = {
+            levelQuery: "",
+            categoryQuery: "",
+            subQuery: "",
+            trendingQuery: "",
+            searchQuery: "",
+            nextPageToken: "",
+            sortOrder: "relevance"
+        };
+
+        // DOM Elements mapping
         const DOM = {
-            searchBox: document.getElementById('searchInput'),
+            searchInput: document.getElementById('searchInput'),
             searchBtn: document.getElementById('searchBtn'),
+            levelFilters: document.getElementById('levelFilters'),
+            categoryFilters: document.getElementById('categoryFilters'),
+            subCategoryPanel: document.getElementById('subCategoryPanel'),
+            subCategoryFilters: document.getElementById('subCategoryFilters'),
+            trendingPanel: document.getElementById('trendingPanel'),
+            trendingFilters: document.getElementById('trendingFilters'),
             videoGrid: document.getElementById('videoGrid'),
             loadMoreBtn: document.getElementById('loadMoreBtn'),
-            categories: document.querySelectorAll('.cat-btn')
+            modal: document.getElementById('videoModal'),
+            iframe: document.getElementById('youtubeIframe'),
+            closeModalBtn: document.getElementById('closeModalBtn')
         };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchVideos(false);
+        // Initialize Architecture
+        function init() {
+            renderLevelFilters();
+            renderCategoryFilters();
+            bindEvents();
+            executeFetch(false);
+        }
 
-            DOM.searchBtn.addEventListener('click', () => {
-                const keyword = DOM.searchBox.value.trim();
-                if (keyword) {
-                    DOM.categories.forEach(b => b.classList.remove('active'));
-                    state.currentQuery = keyword;
-                    fetchVideos(false);
-                }
+        function renderLevelFilters() {
+            TAXONOMY.levels.forEach((lvl, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `btn-tag ${idx === 0 ? 'active' : ''}`;
+                btn.innerText = lvl.label;
+                btn.onclick = () => {
+                    document.querySelectorAll('#levelFilters .btn-tag').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.levelQuery = lvl.query;
+                    rotateSortOrder();
+                    executeFetch(false);
+                };
+                DOM.levelFilters.appendChild(btn);
             });
+        }
 
-            DOM.searchBox.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    DOM.searchBtn.click();
-                }
-            });
-
-            DOM.categories.forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    DOM.categories.forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
+        function renderCategoryFilters() {
+            TAXONOMY.categories.forEach((cat, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `btn-tag ${idx === 0 ? 'active' : ''}`;
+                btn.innerText = cat.label;
+                btn.onclick = () => {
+                    document.querySelectorAll('#categoryFilters .btn-tag').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
                     
-                    state.currentQuery = e.target.getAttribute('data-query');
-                    DOM.searchBox.value = ""; 
-                    fetchVideos(false);
-                });
+                    state.categoryQuery = cat.query;
+                    state.subQuery = "";
+                    state.trendingQuery = "";
+                    state.searchQuery = "";
+                    DOM.searchInput.value = "";
+
+                    handleSubCategories(cat);
+                    rotateSortOrder();
+                    executeFetch(false);
+                };
+                DOM.categoryFilters.appendChild(btn);
+            });
+        }
+
+        function handleSubCategories(cat) {
+            DOM.subCategoryFilters.innerHTML = '';
+            DOM.trendingFilters.innerHTML = '';
+            DOM.trendingPanel.style.display = 'none';
+
+            if (!cat.sub || cat.sub.length === 0) {
+                DOM.subCategoryPanel.style.display = 'none';
+                return;
+            }
+
+            DOM.subCategoryPanel.style.display = 'block';
+            cat.sub.forEach((subCat, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `btn-tag ${idx === 0 ? 'active' : ''}`;
+                btn.innerText = subCat.label;
+                btn.onclick = () => {
+                    document.querySelectorAll('#subCategoryFilters .btn-tag').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    state.subQuery = subCat.query;
+                    state.trendingQuery = "";
+                    handleTrendingOptions(subCat);
+                    rotateSortOrder();
+                    executeFetch(false);
+                };
+                DOM.subCategoryFilters.appendChild(btn);
             });
 
-            DOM.loadMoreBtn.addEventListener('click', () => {
-                if (state.nextPageToken) {
-                    fetchVideos(true);
+            // Auto-select first sub-category
+            state.subQuery = cat.sub[0].query;
+            handleTrendingOptions(cat.sub[0]);
+        }
+
+        function handleTrendingOptions(subCat) {
+            DOM.trendingFilters.innerHTML = '';
+            if (!subCat.trending || subCat.trending.length === 0) {
+                DOM.trendingPanel.style.display = 'none';
+                return;
+            }
+
+            DOM.trendingPanel.style.display = 'block';
+            subCat.trending.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-tag';
+                btn.innerText = item.label;
+                btn.onclick = () => {
+                    document.querySelectorAll('#trendingFilters .btn-tag').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    state.trendingQuery = item.query;
+                    rotateSortOrder();
+                    executeFetch(false);
+                };
+                DOM.trendingFilters.appendChild(btn);
+            });
+        }
+
+        // Anti-Duplication: Rotate sorting algorithm to guarantee varied results on refresh/clicks
+        function rotateSortOrder() {
+            const orders = ["relevance", "rating", "viewCount"];
+            const currentIdx = orders.indexOf(state.sortOrder);
+            state.sortOrder = orders[(currentIdx + 1) % orders.length];
+        }
+
+        function bindEvents() {
+            DOM.searchBtn.onclick = () => {
+                const val = DOM.searchInput.value.trim();
+                if (val) {
+                    // Reset category active states on manual search
+                    document.querySelectorAll('#categoryFilters .btn-tag').forEach(b => b.classList.remove('active'));
+                    DOM.subCategoryPanel.style.display = 'none';
+                    DOM.trendingPanel.style.display = 'none';
+                    
+                    state.searchQuery = val;
+                    state.categoryQuery = "";
+                    state.subQuery = "";
+                    state.trendingQuery = "";
+                    rotateSortOrder();
+                    executeFetch(false);
                 }
-            });
-        });
+            };
 
-        async function fetchVideos(isLoadMore = false) {
-            const API_KEY = "AIzaSyD7Nbtw3hjr0aZsSujG3OnUAddQQNzrJwg"; 
-            const MAX_RESULTS = 16;
+            DOM.searchInput.onkeypress = (e) => {
+                if (e.key === 'Enter') DOM.searchBtn.click();
+            };
 
-            if (!isLoadMore) {
-                DOM.videoGrid.innerHTML = '<div class="loading">Đang tải danh sách video...</div>';
+            DOM.loadMoreBtn.onclick = () => {
+                if (state.nextPageToken) executeFetch(true);
+            };
+
+            DOM.closeModalBtn.onclick = closeModal;
+            DOM.modal.onclick = (e) => {
+                if (e.target === DOM.modal) closeModal();
+            };
+        }
+
+        function buildFinalQueryString() {
+            const parts = [
+                state.searchQuery,
+                state.trendingQuery || state.subQuery || state.categoryQuery,
+                state.levelQuery,
+                CONFIG.POSITIVE_MODIFIERS,
+                CONFIG.NEGATIVE_MODIFIERS
+            ].filter(Boolean);
+            
+            return parts.join(" ");
+        }
+
+        async function executeFetch(isNextPage = false) {
+            if (CONFIG.API_KEY === "[FILL: API key]") {
+                DOM.videoGrid.innerHTML = '<div class="status-msg" style="color:red;">Lỗi cấu hình: Vui lòng thay thế [FILL: API key] bằng mã YouTube Data API v3 thực tế của bạn trong mã nguồn.</div>';
+                return;
+            }
+
+            if (!isNextPage) {
+                DOM.videoGrid.innerHTML = '<div class="status-msg">Đang truy xuất hệ thống video hướng dẫn...</div>';
                 DOM.loadMoreBtn.style.display = 'none';
             }
 
-            let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=${MAX_RESULTS}&q=${encodeURIComponent(state.currentQuery)}&key=${API_KEY}`;
-            
-            if (isLoadMore && state.nextPageToken) {
-                url += `&pageToken=${state.nextPageToken}`;
+            const q = buildFinalQueryString();
+            const params = new URLSearchParams({
+                part: 'snippet',
+                maxResults: CONFIG.MAX_RESULTS,
+                q: q,
+                type: 'video',
+                videoEmbeddable: 'true',
+                order: state.sortOrder,
+                key: CONFIG.API_KEY
+            });
+
+            if (isNextPage && state.nextPageToken) {
+                params.append('pageToken', state.nextPageToken);
             }
 
             try {
-                const response = await fetch(url);
+                const response = await fetch(`${CONFIG.BASE_URL}?${params.toString()}`);
                 const data = await response.json();
 
                 if (data.error) {
@@ -335,60 +695,73 @@
 
                 state.nextPageToken = data.nextPageToken || "";
 
-                if (!isLoadMore) {
-                    DOM.videoGrid.innerHTML = '';
-                }
+                if (!isNextPage) DOM.videoGrid.innerHTML = '';
 
                 if (!data.items || data.items.length === 0) {
-                    if (!isLoadMore) {
-                        DOM.videoGrid.innerHTML = '<div class="no-result">Không tìm thấy video nào phù hợp!</div>';
+                    if (!isNextPage) {
+                        DOM.videoGrid.innerHTML = '<div class="status-msg">Không tìm thấy video hướng dẫn phù hợp với tiêu chuẩn lọc hiện tại.</div>';
                     }
                     DOM.loadMoreBtn.style.display = 'none';
                     return;
                 }
 
-                renderVideos(data.items, isLoadMore);
+                renderVideoGrid(data.items, isNextPage);
                 DOM.loadMoreBtn.style.display = state.nextPageToken ? 'inline-block' : 'none';
 
-            } catch (error) {
-                console.error("Lỗi khi gọi API YouTube:", error);
-                if (!isLoadMore) {
-                    DOM.videoGrid.innerHTML = `<div class="error-msg">Lỗi tải dữ liệu: ${error.message}. Vui lòng kiểm tra lại API Key!</div>`;
+            } catch (err) {
+                console.error("API Gateway Error:", err);
+                if (!isNextPage) {
+                    DOM.videoGrid.innerHTML = `<div class="status-msg" style="color:red;">Lỗi kết nối API: ${err.message}</div>`;
                 }
             }
         }
 
-        function renderVideos(items, isAppend) {
-            let htmlContent = '';
+        function renderVideoGrid(items, append) {
+            const fragment = document.createDocumentFragment();
+
             items.forEach(item => {
                 const videoId = item.id.videoId;
                 const title = item.snippet.title;
-                const channelTitle = item.snippet.channelTitle;
-                const thumbnail = item.snippet.thumbnails.medium.url;
-                const watchUrl = `https://www.youtube.com/watch?v=${videoId}`;
+                const channel = item.snippet.channelTitle;
+                const thumb = item.snippet.thumbnails.high ? item.snippet.thumbnails.high.url : item.snippet.thumbnails.medium.url;
 
-                htmlContent += `
-                    <div class="video-card">
-                        <div class="thumbnail-container">
-                            <img src="${thumbnail}" alt="${title}" loading="lazy">
-                        </div>
-                        <div class="video-info">
-                            <div>
-                                <h3 class="video-title" title="${title}">${title}</h3>
-                                <p class="video-channel">${channelTitle}</p>
-                            </div>
-                            <a href="${watchUrl}" target="_blank" class="watch-btn">Xem Hướng Dẫn</a>
-                        </div>
+                const card = document.createElement('div');
+                card.className = 'video-card';
+                card.onclick = () => openModal(videoId);
+
+                card.innerHTML = `
+                    <div class="thumb-wrap">
+                        <img src="${thumb}" alt="${title}" loading="lazy">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title" title="${title}">${title}</div>
+                        <div class="card-channel">${channel}</div>
                     </div>
                 `;
+                fragment.appendChild(card);
             });
 
-            if (isAppend) {
-                DOM.videoGrid.insertAdjacentHTML('beforeend', htmlContent);
+            if (append) {
+                DOM.videoGrid.appendChild(fragment);
             } else {
-                DOM.videoGrid.innerHTML = htmlContent;
+                DOM.videoGrid.innerHTML = '';
+                DOM.videoGrid.appendChild(fragment);
             }
         }
+
+        function openModal(videoId) {
+            // rel=0 ensures recommended videos at the end are from the same channel, avoiding random clutter
+            DOM.iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            DOM.modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            DOM.iframe.src = '';
+            DOM.modal.style.display = 'none';
+        }
+
+        // Run
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
